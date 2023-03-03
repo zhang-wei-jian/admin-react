@@ -1,82 +1,96 @@
-import React from 'react'
-import { Card, Input, Space, Button, Select, Table, Tag } from 'antd';
+import React, { useState, useEffect } from 'react'
+import { Card, Input, Space, Button, Select, Table, Tag, Pagination, Spin } from 'antd';
+import { usePage } from '@/Hooks/usePage'
+import TablePageComponent from '@/Hooks/TablePageComponent'
+
+import { reqHospitalList } from "@/api/hospitalListApi";
+import type { Data, Content } from "@/api/hospitalListApi";
 import type { ColumnsType } from 'antd/es/table';
 import type { DataType } from "@/pages/hospital/hospitalSet/typeScript";
-export default function index() {
+export default function HospitalList() {
 
+  const { pageNo, setPageNo, pageSize, setPageSize, total, setTotal, loading, setLoading } = usePage()
+  const [hospatilList, setHospatilList] = useState<Content[]>([])
 
-  const columns: ColumnsType<DataType> = [
+  const getHospitalList = async (page = pageNo, limit = pageSize) => {
+    // 获取列表
+    const { content, totalElements, size } = await reqHospitalList(page, limit)
+    // 设置列表数组
+    setHospatilList(content)
+    // 修改总页数
+    setTotal(totalElements)
+    // 修改每页多少
+    setPageSize(size)
+    // 修改loading状态
+    setLoading(false)
+  }
+
+  const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text) => <a>{text}</a>,
+      title: '序号',
+      dataIndex: 'hoscode',
+      key: 'hoscode',
+
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
+      title: '医院LOGO',
       key: 'age',
+      render: (row: any, sb: any, sbv: any) => {
+        return (
+          <>
+            {/* <img src={row.logoData} alt="" /> */}
+            <img src={`data:image/png;base64,${row.logoData}`} width={'100pxx'} alt="" />
+          </>
+        )
+
+      }
     },
     {
-      title: 'Address',
+      title: '医院名称',
+      dataIndex: 'hosname',
+      key: 'hosname',
+    },
+    {
+      title: '等级',
+      dataIndex: 'hostype',
+      key: 'hostype',
+    },
+    {
+      title: '详细地址',
       dataIndex: 'address',
       key: 'address',
     },
     {
-      title: 'Tags',
+      title: '状态',
+      dataIndex: 'address',
+      key: 'address',
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
+    },
+    {
+      title: '操作',
       key: 'tags',
       dataIndex: 'tags',
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
+      render: (row: any, sb: any, sbv: any) => {
+        return (
+          <>
+            <Button>你好</Button>
+
+          </>
+        )
+
+      }
     },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <a>Invite {record.name}</a>
-          <a>Delete</a>
-        </Space>
-      ),
-    },
-  ];
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sydney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
-    },
+
   ];
 
+
+  useEffect(() => {
+    getHospitalList()
+  }, [])
   return (
     <>
       <Card title=" 医院设置" extra={<a href="#">More</a>} style={{ width: 1000 }}>
@@ -89,16 +103,26 @@ export default function index() {
           <Select defaultValue="医院类型" style={{ width: 120 }}></Select>
           <Select defaultValue="医院状态" style={{ width: 120 }}></Select>
           <Button type="primary">添加</Button>
-          <Button>批量删除</Button>
+          <Button >批量删除</Button>
 
         </Space>
         <p></p>
-        <Table columns={columns} dataSource={data} />
+
+        <Space></Space>
+
+
+        <Spin spinning={loading}>
+          <TablePageComponent
+            columns={columns}
+            dataSource={hospatilList}
+            total={total}
+
+
+
+          ></TablePageComponent>
+        </Spin>
+
       </Card>
-
-
-
-
 
     </>
   )

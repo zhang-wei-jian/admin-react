@@ -1,7 +1,7 @@
 // src/routes/index.tsx
 import React, { lazy, Suspense, FC } from "react";
 import { useRoutes } from "react-router-dom";
-import { HomeOutlined } from "@ant-design/icons";
+import { HomeOutlined, LoadingOutlined, FacebookOutlined } from "@ant-design/icons";
 import type { XRoutes } from "./types";
 
 import {
@@ -17,6 +17,8 @@ const Dashboard = lazy(() => import("@pages/dashboard"));
 const NotFound = lazy(() => import("@pages/404"));
 const hospitalSet = lazy(() => import("@pages/hospital/hospitalSet"));
 const hospitalList = lazy(() => import("@pages/hospital/hospitalList"));
+const dict = lazy(() => import("@pages/cmn/dict/index"));
+const hospitalAdd = lazy(() => import("@pages/hospital/hospitalSet/add"));
 
 const load = (Comp: FC) => {
   return (
@@ -53,18 +55,40 @@ const routes: XRoutes = [
       {
         path: "/syt/hospital",
 
-        meta: { icon: <HomeOutlined />, title: "医院设置" },
+        meta: { icon: <FacebookOutlined />, title: "医院管理" },
         children: [
           {
             path: "/syt/hospital/hospitalSet",
-            meta: { icon: <HomeOutlined />, title: "医院设置" },
+            meta: { icon: <LoadingOutlined />, title: "医院设置" },
             element: load(hospitalSet),
+            children: [
+
+            ]
+          },
+          {
+            hidden: true,
+            path: "/syt/hospital/hospitalSet/add",
+            meta: { icon: <LoadingOutlined />, title: "添加" },
+            element: load(hospitalAdd),
           },
           {
             path: "/syt/hospital/hospitalList",
-            meta: { icon: <HomeOutlined />, title: "医院列表" },
+            meta: { icon: <LoadingOutlined />, title: "医院列表" },
             element: load(hospitalList),
           },
+
+        ],
+      },
+      {
+        path: "/syt/cmn",
+        meta: { icon: <HomeOutlined />, title: "数据管理" },
+        children: [
+          {
+            path: "/syt/cmn/dict",
+            meta: { icon: <LoadingOutlined />, title: "数据字典" },
+            element: load(hospitalAdd),
+          },
+
         ],
       },
     ],

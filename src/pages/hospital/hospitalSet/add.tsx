@@ -1,109 +1,66 @@
-import React from 'react'
-import { Card, Input, Space, Button, Table, Tag } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import type { DataType } from "./typeScript";
+import React, { useState, useCallback } from 'react'
 
-export default function index() {
+import { Card, Form, Input, Space, Button, Table, Tag, Pagination, Spin } from 'antd';
+import { reqAddHospital } from '@/api/hospitalApi'
+import { useNavigate } from 'react-router-dom';
+export default function Add() {
+  const navigate = useNavigate()
+  const [hospatilName, setHospatilName] = useState('')
+  const [hospatilId, setHospatilId] = useState('')
+  const [hospatilPath, setHospatilPath] = useState('')
+  // const [hospatilApi, setHospatilApi] = useState('')
+  const [useName, setUseName] = useState('')
+  const [usePhone, setUsePhone] = useState('')
+  // const nameChangeHandle = useCallback((value) => {
+  //   console.log(value.nativeEvent.data);
 
-  const columns: ColumnsType<DataType> = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text) => <a>{text}</a>,
-    },
-    {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-    },
-    {
-      title: 'Tags',
-      key: 'tags',
-      dataIndex: 'tags',
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <a>Invite {record.name}</a>
-          <a>Delete</a>
-        </Space>
-      ),
-    },
-  ];
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sydney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
-    },
-  ];
+  // }, [])
+  // const nameChangeHandle = (name: any) => {
+  //   return (e: any) => {
 
-
+  //     console.log('执行了', e.target.value);
+  //   }
+  // }
+  const submit = () => {
+    // 保存发送
+    reqAddHospital({
+      'apiUrl': hospatilPath,
+      'contactsName': useName,
+      'contactsPhone': usePhone,
+      'hoscode': hospatilId,
+      'hosname': hospatilName
+    })
+  }
   return (
     <>
-      <Card title=" 医院设置" extra={<a href="#">More</a>} style={{ width: 1000 }}>
 
-        <Space >
-          <Input.Group compact>
+      <Card>
 
-            <Input placeholder="输入医院名称" style={{ width: '20%' }} ></Input>
-            <Input placeholder="医院编号" style={{ width: '20%' }} ></Input>
-            <Button type="primary">查询</Button>
-            <Button>清空</Button>
-          </Input.Group>
-        </Space>
-        <p></p>
-        <Button type="primary">添加</Button>
-        <Button>批量删除</Button>
-        <Table columns={columns} dataSource={data} />
+        <Form
+          labelCol={{ span: 2 }}
+        >
+          <Form.Item label="医院名称">
+            <Input value={hospatilName} onChange={(event: any) => { setHospatilName(event.target.value) }}></Input>
+          </Form.Item  >
+          <Form.Item label="医院编号" >
+            <Input value={hospatilId} onChange={(event: any) => { setHospatilId(event.target.value) }}></Input>
+          </Form.Item>
+          <Form.Item label="api基础路径">
+            <Input value={hospatilPath} onChange={(event: any) => { setHospatilPath(event.target.value) }}></Input>
+          </Form.Item>
+          <Form.Item label="联系人姓名">
+            <Input value={useName} onChange={(event: any) => { setUseName(event.target.value) }}></Input>
+          </Form.Item>
+          <Form.Item label="联系人手机号">
+            <Input value={usePhone} onChange={(event: any) => { setUsePhone(event.target.value) }}></Input>
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 2 }}>
+            <Button type="primary" onClick={submit}>保存</Button>
 
+            <Button onClick={() => { navigate(-1) }} className='maring' style={{ 'marginLeft': '10px' }} >返回</Button>
+          </Form.Item>
+        </Form>
       </Card>
-
-
-
-
-
-
     </>
   )
-
 }
