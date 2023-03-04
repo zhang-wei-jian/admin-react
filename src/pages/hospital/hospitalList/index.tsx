@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Input, Space, Button, Select, Table, Tag, Pagination, Spin } from 'antd';
+import { Card, Input, Space, Button, Select, Table, Tag, Pagination, Spin, Form } from 'antd';
 import { usePage } from '@/Hooks/usePage'
 import TablePageComponent from '@/components/TablePageComponent/TablePageComponent'
 
@@ -7,12 +7,17 @@ import { reqHospitalList, reqShengList, reqShiLit, reqQuList } from "@/api/hospi
 import type { Data, Content, ShengType, ShiQuType } from "@/api/hospitalListApi";
 import type { ColumnsType } from 'antd/es/table';
 import type { DataType } from "@/pages/hospital/hospitalSet/typeScript";
+import { useNavigate } from 'react-router-dom';
 export default function HospitalList() {
-
+  const navigate = useNavigate()
   const { pageNo, setPageNo, pageSize, setPageSize, total, setTotal, loading, setLoading } = usePage()
   const [hospatilList, setHospatilList] = useState<Content[]>([])
   // 下拉加载状态
   const [selectLoading, setSelectLoading] = useState(true)
+  // 表单收集
+  const [form] = Form.useForm()
+  const [hospatilName, setHospatilName] = useState('')
+  const [hospatilId, setHospatilId] = useState('')
   const getHospitalList = async (page = pageNo, limit = pageSize) => {
     // 获取列表
     const { content, totalElements, size } = await reqHospitalList(page, limit)
@@ -72,8 +77,12 @@ export default function HospitalList() {
     },
     {
       title: '详细地址',
-      dataIndex: 'address',
-      key: 'address',
+      // dataIndex: 'address',
+      key: 'param',
+      render: (row: any) => {
+        return <div>{row.param.fullAddress}</div >
+        // return <div></div>
+      }
     },
     {
       title: '状态',
@@ -92,7 +101,14 @@ export default function HospitalList() {
       render: (row: any, sb: any, sbv: any) => {
         return (
           <>
-            <Button>你好</Button>
+            <Button type="primary" onClick={() => {
+              navigate('/syt/hospital/hospitalList/check', {
+                state: row
+              })
+            }}>查看</Button>
+            <Button type="primary">排班</Button>
+            <Button type="primary">下线</Button>
+
 
           </>
         )
@@ -134,6 +150,11 @@ export default function HospitalList() {
     setSelectList3(opctionList3)
     setSelectLoading(false)
   }
+
+  // 查询按钮
+  const goSearch = () => {
+    console.log(form.getFieldsValue());
+  }
   useEffect(() => {
     // 请求表格
     getHospitalList()
@@ -147,19 +168,33 @@ export default function HospitalList() {
 
         <Space >
           <Spin spinning={selectLoading}>
+            <Form form={form} layout={'inline'}>
+              <Form.Item name={'sheng'}>
+                <Select placeholder="请选者省" style={{ width: 120 }} options={selectList1} onChange={select1ChangeHandle}> </Select>
+              </Form.Item>
+              <Form.Item name={'shi'}>
+                <Select placeholder="请选者市" style={{ width: 120 }} options={selectList2} onChange={select2ChangeHandle}></Select>
+              </Form.Item>
+              <Form.Item name={'qu'}>
+                <Select placeholder="请选者区" style={{ width: 120 }} options={selectList3}></Select>
+              </Form.Item>
+              <Form.Item name={'type'}>
+                <Select placeholder="医院类型" style={{ width: 120 }}></Select>
+              </Form.Item>
+              <Form.Item name={'state'}>
+                <Select placeholder="医院状态" style={{ width: 120 }}></Select>
+              </Form.Item>
+              <Form.Item name={'name'} label="医院名称">
+                <Input value={hospatilName} onChange={(event: any) => { setHospatilName(event.target.value) }}></Input>
+              </Form.Item  >
+              <Form.Item name={'id'} label="医院编号" >
+                <Input value={hospatilId} onChange={(event: any) => { setHospatilId(event.target.value) }}></Input>
+              </Form.Item>
+            </Form>
 
-            <Select placeholder="请选者省" style={{ width: 120 }} options={selectList1} onChange={select1ChangeHandle}> </Select>
-            <Select placeholder="请选者市" style={{ width: 120 }} options={selectList2} onChange={select2ChangeHandle}></Select>
-            <Select placeholder="请选者区" style={{ width: 120 }} options={selectList3}></Select>
-            <Select placeholder="医院名称" style={{ width: 120 }}></Select>
-            <Select placeholder="医院编号" style={{ width: 120 }}></Select>
-            <Select placeholder="医院类型" style={{ width: 120 }}></Select>
-            <Select placeholder="医院状态" style={{ width: 120 }}></Select>
           </Spin>
 
-
-
-          <Button type="primary">添加</Button>
+          <Button type="primary" onClick={(e) => goSearch()}>查询</Button>
           <Button >批量删除</Button>
 
         </Space>

@@ -6,9 +6,9 @@ const APIs = {
   reqSheng: '/admin/cmn/dict/findByDictCode',
   reqShi: '/admin/cmn/dict/findByParentId',
   reqQu: '/admin/cmn/dict/findByParentId',
+  check: '/admin/hosp/hospital/show',
 
 }
-
 
 export const reqHospitalList = (page: number, limit: number) => {
   // 请求医院设置的列表
@@ -26,9 +26,10 @@ export const reqQuList = (parentId: number) => {
   // 请求区
   return request.get<any, ShiQuType[]>(`${APIs.reqQu}/${parentId}`)
 }
-
-
-
+export const reqCheck = (id: number) => {
+  // 查看医院
+  return request.get<any, ShiQuType[]>(`${APIs.check}/${id}`)
+}
 
 
 

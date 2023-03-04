@@ -5,6 +5,8 @@ import { reqAddHospital } from '@/api/hospitalApi'
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { Record } from "@/api/hospitalApi";
 export default function Add() {
+
+  
   const location = useLocation()
   const [row, setRow] = useState<Record>(location.state as Record)
   const navigate = useNavigate()
@@ -16,7 +18,7 @@ export default function Add() {
   const [useName, setUseName] = useState('')
   const [usePhone, setUsePhone] = useState('')
 
-  console.log(location.state);
+  // console.log(location.state);
 
 
   const submit = () => {

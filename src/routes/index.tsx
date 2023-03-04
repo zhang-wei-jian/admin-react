@@ -19,6 +19,7 @@ const hospitalSet = lazy(() => import("@pages/hospital/hospitalSet"));
 const hospitalList = lazy(() => import("@pages/hospital/hospitalList"));
 const dict = lazy(() => import("@pages/cmn/dict/index"));
 const hospitalAdd = lazy(() => import("@pages/hospital/hospitalSet/add"));
+const check = lazy(() => import("@pages/hospital/hospitalList/check"));
 
 const load = (Comp: FC) => {
   return (
@@ -75,6 +76,12 @@ const routes: XRoutes = [
             path: "/syt/hospital/hospitalList",
             meta: { icon: <LoadingOutlined />, title: "医院列表" },
             element: load(hospitalList),
+          },
+          {
+            hidden: true,
+            path: "/syt/hospital/hospitalList/check",
+            meta: { icon: <LoadingOutlined />, title: "医院查看" },
+            element: load(check),
           },
 
         ],
