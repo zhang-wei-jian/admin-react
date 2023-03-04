@@ -86,7 +86,7 @@ const routes: XRoutes = [
           {
             path: "/syt/cmn/dict",
             meta: { icon: <LoadingOutlined />, title: "数据字典" },
-            element: load(hospitalAdd),
+            element: load(dict),
           },
 
         ],

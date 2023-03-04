@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, MouseEventHandler } from 'react'
+import TablePageComponent from '@/components/TablePageComponent/TablePageComponent'
+
 import { useNavigate } from 'react-router-dom';
 import { usePage } from '@/Hooks/usePage'
 import { Card, Form, Input, Space, Button, Table, Tag, Pagination, Spin } from 'antd';
@@ -73,7 +75,7 @@ export default function HospitalSet() {
       key: Date.now(),
       render: (row: Record, record: any, index: any) => (
         <>
-          <Button onClick={editHandle('123')} icon={<EditOutlined />} ></Button>
+          <Button onClick={(e) => { editHandle(e, row) }} icon={<EditOutlined />} ></Button>
           <Button danger icon={<DeleteOutlined />}></Button>
         </>
       ),
@@ -91,74 +93,83 @@ export default function HospitalSet() {
     navigate('/hospital/hospitalSet/add')
 
   }
-  const editHandle = (id: string) => {
-    return (event: any) => {
+  const editHandle = (e: any, row: Record) => {
 
-
+    navigate('/syt/hospital/hospitalSet/add', {
+      state: row
     }
+
+    )
+    // return (row?: any) => {
+    //   console.log(row);
+
+
+
+
+    // }
   }
 
 
-}
-const [hospatilId, sethospatilId] = useState()
-const [form] = Form.useForm()
-const goSearchHandle = () => {
 
-  const { hospatilName, id } = form.getFieldsValue()
-  getHospitalSetList(pageNo, pageSize, hospatilName, id)
-}
-const clearForm = () => {
+  const [hospatilId, sethospatilId] = useState()
+  const [form] = Form.useForm()
+  const goSearchHandle = () => {
 
-  form.setFieldsValue({ hospatilName: '', id: '' })
-
-
-}
-
-
-useEffect(() => {
-  getHospitalSetList()
-  // setLoading(false)
-  return () => {
-    // console.log('useEffect的return的函数就是卸载执行的');
+    const { hospatilName, id } = form.getFieldsValue()
+    getHospitalSetList(pageNo, pageSize, hospatilName, id)
   }
-}, [])
-return (
-  <>
+  const clearForm = () => {
+
+    form.setFieldsValue({ hospatilName: '', id: '' })
 
 
-    <Card title=" 医院设置" extra={<a href="#">More</a>} >
-      <Space >
-        <Form form={form} >
-          <Input.Group compact>
-            <Form.Item name="hospatilName">
-              <Input placeholder="输入医院名称" style={{}} ></Input>
-            </Form.Item>
+  }
 
-            <Form.Item name="id">
-              <Input placeholder="医院编号" style={{}} ></Input>
-            </Form.Item  >
-            <Button type="primary" onClick={goSearchHandle} >查询</Button>
-            <Button onClick={clearForm}>清空</Button>
-          </Input.Group>
-        </Form>
-      </Space>
-      <p></p>
-      <Button onClick={goAdd} type="primary">添加</Button>
-      <Button>批量删除</Button>
-      <Spin spinning={loading}>
-        <Table columns={columns} dataSource={hospatiSetlList} rowKey={'id'} />
+
+  useEffect(() => {
+    getHospitalSetList()
+    // setLoading(false)
+    return () => {
+      // console.log('useEffect的return的函数就是卸载执行的');
+    }
+  }, [])
+  return (
+    <>
+
+
+      <Card title=" 医院设置" extra={<a href="#">More</a>} >
+        <Space >
+          <Form form={form} >
+            <Input.Group compact>
+              <Form.Item name="hospatilName">
+                <Input placeholder="输入医院名称" style={{}} ></Input>
+              </Form.Item>
+
+              <Form.Item name="id">
+                <Input placeholder="医院编号" style={{}} ></Input>
+              </Form.Item  >
+              <Button type="primary" onClick={goSearchHandle} >查询</Button>
+              <Button onClick={clearForm}>清空</Button>
+            </Input.Group>
+          </Form>
+        </Space>
         <p></p>
-        <Pagination
-          total={85}
-          showSizeChanger
-          showQuickJumper
-          showTotal={total => `Total ${total} items`}
-        />
-      </Spin>
-    </Card>
+        <Button onClick={goAdd} type="primary">添加</Button>
+        <Button>批量删除</Button>
+        <Spin spinning={loading}>
+          <Table columns={columns} dataSource={hospatiSetlList} rowKey={'id'} />
+          <p></p>
+          <Pagination
+            total={85}
+            showSizeChanger
+            showQuickJumper
+            showTotal={total => `Total ${total} items`}
+          />
+        </Spin>
+      </Card>
 
 
-  </>
-)
+    </>
+  )
 
 }

@@ -1,5 +1,6 @@
 import React from 'react'
-import TablePageComponent from '@/Hooks/TablePageComponent'
+import TablePageComponent from '@/components/TablePageComponent/TablePageComponent'
+
 export default function index() {
 
 

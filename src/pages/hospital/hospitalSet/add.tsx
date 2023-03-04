@@ -1,26 +1,24 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 
 import { Card, Form, Input, Space, Button, Table, Tag, Pagination, Spin } from 'antd';
 import { reqAddHospital } from '@/api/hospitalApi'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import type { Record } from "@/api/hospitalApi";
 export default function Add() {
+  const location = useLocation()
+  const [row, setRow] = useState<Record>(location.state as Record)
   const navigate = useNavigate()
+  // 下面是数据绑定的表单
   const [hospatilName, setHospatilName] = useState('')
   const [hospatilId, setHospatilId] = useState('')
   const [hospatilPath, setHospatilPath] = useState('')
   // const [hospatilApi, setHospatilApi] = useState('')
   const [useName, setUseName] = useState('')
   const [usePhone, setUsePhone] = useState('')
-  // const nameChangeHandle = useCallback((value) => {
-  //   console.log(value.nativeEvent.data);
 
-  // }, [])
-  // const nameChangeHandle = (name: any) => {
-  //   return (e: any) => {
+  console.log(location.state);
 
-  //     console.log('执行了', e.target.value);
-  //   }
-  // }
+
   const submit = () => {
     // 保存发送
     reqAddHospital({
@@ -31,6 +29,16 @@ export default function Add() {
       'hosname': hospatilName
     })
   }
+  useEffect(() => {
+    // 如果携带了state，就给表单写上去
+    if (row) {
+      setHospatilName(row.hosname)
+      setHospatilId(row.hoscode)
+      setHospatilPath(row.apiUrl)
+      setUseName(row.contactsName)
+      setUsePhone(row.contactsPhone)
+    }
+  }, [])
   return (
     <>
 
